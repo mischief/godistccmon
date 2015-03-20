@@ -40,6 +40,14 @@ func (s DistccState) String() string {
 		bytes.Trim(s.Host[:], "\x00"), s.Slot, states[s.State], bytes.Trim(s.File[:], "\x00"))
 }
 
+func (s DistccState) FileStr() string {
+	return string(bytes.Trim(s.File[:], "\x00"))
+}
+
+func (s DistccState) HostStr() string {
+	return string(bytes.Trim(s.Host[:], "\x00"))
+}
+
 type Jobs map[string]DistccState
 
 type byHostSlot []DistccState
@@ -47,11 +55,12 @@ type byHostSlot []DistccState
 func (s byHostSlot) Len() int      { return len(s) }
 func (s byHostSlot) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
 func (s byHostSlot) Less(i, j int) bool {
-	if s[i].Host == s[j].Host {
+	s1, s2 := s[i].HostStr(), s[j].HostStr()
+	if s1 == s2 {
 		return s[i].Slot < s[j].Slot
 	}
 
-	return true
+	return s1 < s2
 }
 
 func (j Jobs) Sort() []DistccState {
@@ -116,10 +125,11 @@ func main() {
 		j := jobs.Sort()
 
 		str(1, 0, fmt.Sprintf("%d active jobs.", len(j)))
+		str(0, 1, fmt.Sprintf("%-15s %-8s %-15s %-15s", "Host", "Slot", "State", "File"))
 
-		i := 1
+		i := 2
 		for _, st := range j {
-			str(0, i, fmt.Sprintf("%s", st))
+			str(0, i, fmt.Sprintf("%-15s %-8d %-15s %-15s", st.HostStr(), st.Slot, states[st.State], st.FileStr()))
 			i++
 		}
 
