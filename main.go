@@ -164,7 +164,7 @@ func draw(jobs Jobs) {
 	j := jobs.Sort()
 
 	str(1, 0, fmt.Sprintf("%d active jobs.", len(j)))
-	str(0, 1, fmt.Sprintf("%-15s %-8s %-15s %-25s %-8s %-20s", "Host", "Slot", "State", "File", "Age"))
+	str(0, 1, fmt.Sprintf("%-15s %-8s %-15s %-25s %-20s", "Host", "Slot", "State", "File", "Age"))
 
 	i := 2
 	for _, st := range j {
