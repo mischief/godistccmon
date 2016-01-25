@@ -144,8 +144,13 @@ mainloop:
 		case ev := <-event:
 			switch ev.Type {
 			case termbox.EventKey:
-				switch ev.Key {
-				case termbox.KeyEsc:
+				switch ev.Ch {
+				case rune(0):
+					switch ev.Key {
+					case termbox.KeyEsc, termbox.KeyCtrlC:
+						break mainloop
+					}
+				case 'q':
 					break mainloop
 				}
 			case termbox.EventError:
